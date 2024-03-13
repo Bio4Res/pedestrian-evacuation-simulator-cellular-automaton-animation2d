@@ -1,7 +1,12 @@
 # pedestrian-evacuation-simulator-cellular-automaton-animation2d
 Animates in 2D a trace of an evacuation as simulated by a cellular automaton.
+See `Main` class for an example.
+
+Pepe Gallardo, 2024
 
 ## Requirements
+
+Requires JDK 17 or higher. 
 
 This project has the following dependencies:
 
