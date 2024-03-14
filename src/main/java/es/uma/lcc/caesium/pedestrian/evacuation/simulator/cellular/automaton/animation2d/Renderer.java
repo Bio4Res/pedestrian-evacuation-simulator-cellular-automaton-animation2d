@@ -50,7 +50,7 @@ public class Renderer {
           var coordinates = pedestrian.location().coordinates();
 
           // ellipse2D takes coordinates of the lower left corner of the rectangle that contains the ellipse
-          graphics2D.fill(new Ellipse2D.Double(coordinates.x() * cellDimension, coordinates.y() * cellDimension,
+          graphics2D.fill(new Ellipse2D.Double(coordinates.x() - cellDimension / 2, coordinates.y() - cellDimension / 2,
               cellDimension, cellDimension));
         }
       }
