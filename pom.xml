@@ -25,5 +25,10 @@
             <artifactId>pedestrian-evacuation-simulator-cellular-automaton-trace</artifactId>
             <version>1.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-all</artifactId>
+            <version>1.17</version>
+        </dependency>
     </dependencies>
 </project>

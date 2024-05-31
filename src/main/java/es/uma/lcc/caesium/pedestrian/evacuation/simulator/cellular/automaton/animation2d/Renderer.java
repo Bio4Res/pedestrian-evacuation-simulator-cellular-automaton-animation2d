@@ -2,25 +2,20 @@ package es.uma.lcc.caesium.pedestrian.evacuation.simulator.cellular.automaton.an
 
 import es.uma.lcc.caesium.pedestrian.evacuation.simulator.cellular.automaton.trace.Trace;
 import es.uma.lcc.caesium.pedestrian.evacuation.simulator.environment.Domain;
+import org.apache.batik.dom.GenericDOMImplementation;
+import org.apache.batik.svggen.SVGGraphics2D;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
+import java.io.FileWriter;
+import java.io.IOException;
 
 /**
  * Class for rendering a domain and its pedestrians at a given time tick.
  *
  * @author Pepe Gallardo
  */
-public class Renderer {
-  private final Domain domain;
-  private final Trace trace;
-  private final int tick;
-
-  public Renderer(Domain domain, Trace trace, int tick) {
-    this.domain = domain;
-    this.trace = trace;
-    this.tick = tick;
-  }
+public record Renderer(Domain domain, Trace trace, int tick) {
 
   private void renderDomain(Graphics2D graphics2D) {
     // Draw obstacles
@@ -39,7 +34,7 @@ public class Renderer {
   }
 
   private void renderPedestrians(Graphics2D graphics2D) {
-    if (tick < trace.snapshots().length) {
+    if (tick >= 0 && tick < trace.snapshots().length) {
       var snapshot = trace.snapshots()[tick];
       var cellDimension = trace.cellDimension();
 
@@ -61,6 +56,29 @@ public class Renderer {
     var graphics2D = canvas.graphics2D();
     renderDomain(graphics2D);
     renderPedestrians(graphics2D);
+  }
+
+  public void renderOnSVG(String filename, double pixelsPerUnit) throws IOException {
+    // Get a DOMImplementation
+    var domImpl = GenericDOMImplementation.getDOMImplementation();
+
+    // Create an instance of org.w3c.dom.Document
+    var document = domImpl.createDocument("http://www.w3.org/2000/svg", "svg", null);
+
+    // Create an instance of the SVG Generator
+    var svgGraphics2D = new SVGGraphics2D(document);
+    var width = (int) domain.getWidth();
+    var height = (int) domain.getHeight();
+    svgGraphics2D.translate(0, pixelsPerUnit * height);
+    svgGraphics2D.scale(pixelsPerUnit, -pixelsPerUnit);
+    svgGraphics2D.setColor(Color.white);
+    svgGraphics2D.fillRect(0, 0, width, height);
+    renderDomain(svgGraphics2D);
+    renderPedestrians(svgGraphics2D);
+    var useCSS = true; // we want to use CSS style attributes
+    var writer = new FileWriter(filename);
+    svgGraphics2D.stream(writer, useCSS);
+    writer.close();
   }
 
   /**
